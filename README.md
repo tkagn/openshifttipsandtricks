@@ -1,5 +1,14 @@
 # Openshift Tips and Tricks
 
-### Get Events sorted by timestamp ######
+### Get events sorted by timestamp ######
 
 ``` oc get events -n openshift-storage   --sort-by=.metadata.creationTimestamp ```
+
+### Get only names of pods ####
+
+``` oc get pods -n openshift-storage -o name | grep noobaa ```
+
+### Delete pods based on name ####
+
+``` oc delete $(oc get pods -n openshift-storage -o name |grep noob) -n openshift-storage ```
+
