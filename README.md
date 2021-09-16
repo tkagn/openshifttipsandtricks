@@ -12,3 +12,12 @@
 
 ``` oc delete $(oc get pods -n openshift-storage -o name |grep noob) -n openshift-storage ```
 
+### Setup HTPasswd Autentication ###
+
+Install httpd-tools and create HTPassword file
+
+```bash
+dnf install httpd-tools
+
+
+```
