@@ -18,6 +18,25 @@ Install httpd-tools and create HTPassword file
 
 ```bash
 dnf install httpd-tools
-
-
+htpasswd -c -B -b /tmp/htpasswd 'auser' 'theuserpassword'
 ```
+Generate HTPasswd Secret
+```bash
+oc create secret generic httpasswd-secret --from-file=htpasswd=/tmp/htpasswd -n openshift-config
+```
+
+
+
+### Delete user from Openshift
+
+```bash
+oc delete user <username>
+oc delete identity <IDP Name>:<username>
+
+ex:
+oc delete user dunbar
+oc delete identity htpasswd:dunbar   
+```
+WARNING: If the identity is not deleted the user will not be able to login even though the user has been deleted
+
+
