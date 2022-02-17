@@ -40,3 +40,27 @@ oc delete identity htpasswd:dunbar
 WARNING: If the identity is not deleted the user will not be able to login even though the user has been deleted
 
 
+### Update htpasswd auth 
+
+```bash
+oc get secret htpasswd-secret -ojsonpath={.data.htpasswd} -n openshift-config | base64 --decode > users.htpasswd
+htpasswd -Bb users.htpasswd <username> '<password>'
+oc create secret generic htpasswd-secret --from-file=htpasswd=users.htpasswd --dry-run=client -o yaml -n openshift-config | oc replace -f -
+```
+Authorization pods will be restarted in the openshift-authentication namespace.
+Verify by ` oc get pods -n openshift-authentication`
+
+### Add User to cluster-admin role
+
+```bash
+# Create gorup
+oc adm groups new ocp-admins
+
+# Add user to group
+oc adm groups add-users ocp-admins tkagn
+
+#Add cluster-admin role to group
+oc adm policy add-cluster-role-to-group cluster-admin ocp-admins
+```
+
+
