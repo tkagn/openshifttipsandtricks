@@ -43,15 +43,21 @@ WARNING: If the identity is not deleted the user will not be able to login even 
 ### Update htpasswd auth 
 
 ```bash
+# Extract htpasswd file from secret
 oc get secret htpasswd-secret -ojsonpath={.data.htpasswd} -n openshift-config | base64 --decode > users.htpasswd
+
+# Update htpasswd file with new user, edit current user password, or remove user
 htpasswd -Bb users.htpasswd <username> '<password>'
+
+# Import updated htpasswd file into htpasswd secret
 oc create secret generic htpasswd-secret --from-file=htpasswd=users.htpasswd --dry-run=client -o yaml -n openshift-config | oc replace -f -
 ```
+
 Authorization pods will be restarted in the openshift-authentication namespace.
 Verify by ` oc get pods -n openshift-authentication`
 
-### Add User to cluster-admin role
 
+### Add User to cluster-admin role
 ```bash
 # Create gorup
 oc adm groups new ocp-admins
