@@ -1,18 +1,18 @@
 # Openshift Tips and Tricks
 
-### Get events sorted by timestamp ######
+## Get events sorted by timestamp
 
 ``` oc get events -n openshift-storage   --sort-by=.metadata.creationTimestamp ```
 
-### Get only names of pods ####
+## Get only names of pods
 
 ``` oc get pods -n openshift-storage -o name | grep noobaa ```
 
-### Delete pods based on name ####
+## Delete pods based on name
 
 ``` oc delete $(oc get pods -n openshift-storage -o name |grep noob) -n openshift-storage ```
 
-### Setup HTPasswd Autentication ###
+## Setup HTPasswd Autentication
 
 Install httpd-tools and create HTPassword file
 
@@ -20,14 +20,14 @@ Install httpd-tools and create HTPassword file
 dnf install httpd-tools
 htpasswd -c -B -b /tmp/htpasswd 'auser' 'theuserpassword'
 ```
+
 Generate HTPasswd Secret
+
 ```bash
 oc create secret generic httpasswd-secret --from-file=htpasswd=/tmp/htpasswd -n openshift-config
 ```
 
-
-
-### Delete user from Openshift
+## Delete user from Openshift
 
 ```bash
 oc delete user <username>
@@ -37,10 +37,10 @@ ex:
 oc delete user dunbar
 oc delete identity htpasswd:dunbar   
 ```
+
 WARNING: If the identity is not deleted the user will not be able to login even though the user has been deleted
 
-
-### Update htpasswd auth 
+## Update htpasswd auth
 
 ```bash
 # Extract htpasswd file from secret
@@ -54,10 +54,72 @@ oc create secret generic htpasswd-secret --from-file=htpasswd=users.htpasswd --d
 ```
 
 Authorization pods will be restarted in the openshift-authentication namespace.
-Verify by ` oc get pods -n openshift-authentication`
+Verify by `oc get pods -n openshift-authentication`
 
+## Add OpenID authentication for Azure
 
-### Add User to cluster-admin role
+Create secret in `openshift-config` namespace that contains clientsecret for Azure App Registration
+
+```bash
+oc create secret generic openid-client-secret --from-literal=clientSecret=<secret> -n openshift-config
+
+# or copy secret to a file named clientSecret and use the file to poulated the clientSecret key
+
+oc create secret generic openid-client-secret --from-file=clientSecret -n openshift-config
+```
+
+NOTE: The client secret can be/should be obtained and entered in a secure fashion. This command will leave the secret
+in plain-text in the cli history.
+
+Update oauth object
+
+```bash
+oc get oauths.config.openshift.io cluster -o yaml > oauth.yaml
+```
+
+Edit oauth.yml with new `identityProvider`
+
+```yaml
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: AzureAD
+    type: OpenID
+    mappingMethod: claim
+    openID:
+      clientID: <clientID>
+      clientSecret:
+        name: openid-client-secret
+      issuer: https://login.microsoftonline.com/<tenantID>
+      claims:
+        email:
+          - email
+        name:
+          - name
+        preferredUsername:
+          - upn
+```
+
+Apply updated manifest to cluster
+
+```bash
+# test & verify 
+oc apply -f oauth.yaml -o yaml --dry-run=server
+
+# apply
+ oc apply -f oauth.yaml
+```
+
+Resources:
+
+- [Configuring a OpenID Connect identity provider](https://docs.openshift.com/container-platform/4.7/authentication/identity_providers/configuring-oidc-identity-provider.html)
+- [Configure Azure Active Directory authentication for an Azure Red Hat OpenShift 4 cluster (Portal)](https://docs.microsoft.com/en-us/azure/openshift/configure-azure-ad-ui)
+
+## Add User to cluster-admin role
+
 ```bash
 # Create gorup
 oc adm groups new ocp-admins
@@ -68,5 +130,3 @@ oc adm groups add-users ocp-admins tkagn
 #Add cluster-admin role to group
 oc adm policy add-cluster-role-to-group cluster-admin ocp-admins
 ```
-
-
