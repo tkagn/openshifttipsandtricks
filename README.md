@@ -12,6 +12,9 @@
 
 ``` oc delete $(oc get pods -n openshift-storage -o name |grep noob) -n openshift-storage ```
 
+## Delete pods based on status
+``` oc delete pods  --field-selector status.phase=Pending -o name ```
+
 ## Setup HTPasswd Autentication
 
 Install httpd-tools and create HTPassword file
