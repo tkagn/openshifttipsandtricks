@@ -133,3 +133,21 @@ oc adm groups add-users ocp-admins tkagn
 #Add cluster-admin role to group
 oc adm policy add-cluster-role-to-group cluster-admin ocp-admins
 ```
+
+
+## Configuring control plane nodes as schedulable
+
+```bash
+oc edit schedulers.config.openshift.io cluster 
+```
+Configure the `mastersSchedulable` field
+
+or 
+
+```bash
+# Test/review patch
+oc patch schedulers/cluster -p '{"spec": {"mastersSchedulable": true}}' --type=merge --dry-run=server -o yaml
+
+# Apply patch
+oc patch schedulers/cluster -p '{"spec": {"mastersSchedulable": true}}' --type=merge
+```
