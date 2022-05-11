@@ -27,7 +27,7 @@ htpasswd -c -B -b /tmp/htpasswd 'auser' 'theuserpassword'
 Generate HTPasswd Secret
 
 ```bash
-oc create secret generic httpasswd-secret --from-file=htpasswd=/tmp/htpasswd -n openshift-config
+oc create secret generic htpasswd-secret --from-file=htpasswd=/tmp/htpasswd -n openshift-config
 ```
 
 ## Delete user from Openshift
