@@ -30,6 +30,38 @@ Generate HTPasswd Secret
 oc create secret generic htpasswd-secret --from-file=htpasswd=/tmp/htpasswd -n openshift-config
 ```
 
+Update `oauth` with htpasswd identity provider
+
+Dump current oauth
+```bash
+oc get oauth cluster -o yaml > oauth.yml
+```
+Add htpasswd identity provider
+
+vi
+```yaml
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec: 
+  identityProvider:
+    - name: htpasswd
+      type: HTPasswd
+      htpasswd:
+        fileData:
+          name: htpasswd
+```
+or 
+
+```bash
+# Test/review patch
+oc patch oauth cluster -p '{"spec":{"identityProviders":[{"htpasswd":{"fileData":{"name":"htpasswd"}},"name":"htpasswd","type":"HTPasswd"}]}}' --type=merge --dry-run=server -o yaml
+
+# Apply patch
+oc patch oauth cluster -p '{"spec":{"identityProviders":[{"htpasswd":{"fileData":{"name":"htpasswd"}},"name":"htpasswd","type":"HTPasswd"}]}}' --type=merge
+
+```
 ## Delete user from Openshift
 
 ```bash
