@@ -184,7 +184,7 @@ oc patch schedulers/cluster -p '{"spec": {"mastersSchedulable": true}}' --type=m
 oc patch schedulers/cluster -p '{"spec": {"mastersSchedulable": true}}' --type=merge
 ```
 
-### Add Customer Notification Banners
+### Add Custom Notification Banners
 
 ```yaml
 apiVersion: console.openshift.io/v1
