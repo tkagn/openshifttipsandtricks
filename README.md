@@ -197,3 +197,15 @@ spec:
   location: BannerTop
   text: UNCLASSIFIED - Unauthorized access not permitted
 ```
+
+### Add MOTD banner for CLI login
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: motd
+  namespace: openshift
+data:
+  message: Welcome to the Red Hat OpenShift
+```
