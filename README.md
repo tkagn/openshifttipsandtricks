@@ -183,3 +183,17 @@ oc patch schedulers/cluster -p '{"spec": {"mastersSchedulable": true}}' --type=m
 # Apply patch
 oc patch schedulers/cluster -p '{"spec": {"mastersSchedulable": true}}' --type=merge
 ```
+
+### Add Customer Notification Banners
+
+```yaml
+apiVersion: console.openshift.io/v1
+kind: ConsoleNotification
+metadata:
+  name: bannertop
+spec:
+  backgroundColor: '#5b9e13'
+  color: '#fff'
+  location: BannerTop
+  text: UNCLASSIFIED - Unauthorized access not permitted
+```
