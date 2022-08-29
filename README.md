@@ -45,7 +45,7 @@ kind: OAuth
 metadata:
   name: cluster
 spec: 
-  identityProvider:
+  identityProviders:
     - name: htpasswd
       type: HTPasswd
       htpasswd:
