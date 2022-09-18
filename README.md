@@ -209,3 +209,23 @@ metadata:
 data:
   message: Welcome to the Red Hat OpenShift
 ```
+
+
+### Removing the privilege to create projects
+```bash
+ oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+```
+
+### Let a specific user create a project
+```bash
+oc adm policy add-cluster-role-to-user self-provisioner <username> --rolebinding-name='self-provisioners'
+```
+
+### CReate project for User
+```bash
+oc new-project the-project-name
+oc adm policy add-role-to-user admin the-user -n the-project-name --rolebinding-name='admin'
+oc patch namespaces my-project-name -p '{"metadata":{"annotations":{"openshift.io/requester": "the-user"}}}'
+```
+
+
