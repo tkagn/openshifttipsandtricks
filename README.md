@@ -221,7 +221,7 @@ data:
 oc adm policy add-cluster-role-to-user self-provisioner <username> --rolebinding-name='self-provisioners'
 ```
 
-### CReate project for User
+### Create project for User
 ```bash
 oc new-project the-project-name
 oc adm policy add-role-to-user admin the-user -n the-project-name --rolebinding-name='admin'
