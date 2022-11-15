@@ -27,7 +27,7 @@ htpasswd -c -B -b /tmp/htpasswd 'auser' 'theuserpassword'
 Generate HTPasswd Secret
 
 ```bash
-oc create secret generic htpasswd-secret --from-file=htpasswd=/tmp/htpasswd -n openshift-config
+oc create secret generic htpasswd --from-file=htpasswd=/tmp/htpasswd -n openshift-config
 ```
 
 Update `oauth` with htpasswd identity provider
