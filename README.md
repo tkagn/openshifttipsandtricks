@@ -230,5 +230,5 @@ oc patch namespaces my-project-name -p '{"metadata":{"annotations":{"openshift.i
 
 ## Configure Time Service
 
-./chrony-configuration.md
+[./chrony configuration.md](./chrony-configuration.md)
 
