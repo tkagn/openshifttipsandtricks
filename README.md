@@ -228,4 +228,7 @@ oc adm policy add-role-to-user admin the-user -n the-project-name --rolebinding-
 oc patch namespaces my-project-name -p '{"metadata":{"annotations":{"openshift.io/requester": "the-user"}}}'
 ```
 
+## Configure Time Service
+
+./chrony-configuration.md
 
